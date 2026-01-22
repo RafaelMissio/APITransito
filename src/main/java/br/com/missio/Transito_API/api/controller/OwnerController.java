@@ -3,14 +3,11 @@ package br.com.missio.Transito_API.api.controller;
 import br.com.missio.Transito_API.domain.model.Owner;
 import br.com.missio.Transito_API.domain.repository.OwnerReposiotry;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -21,7 +18,7 @@ public class OwnerController {
 
     @GetMapping
     public List<Owner> getAllOwners(){
-        return ownerReposiotry.findByNameContaining("el");
+        return ownerReposiotry.findAll();
     }
 
     @GetMapping("/{id}")
@@ -29,6 +26,38 @@ public class OwnerController {
        return ownerReposiotry.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Owner save(@RequestBody Owner owner){
+        return ownerReposiotry.save(owner);
+    }
+
+    @PutMapping("/{ownerId}")
+    public ResponseEntity<Owner> update(@PathVariable Long ownerId, @RequestBody Owner owner){
+
+        if(!ownerReposiotry.existsById(ownerId)){
+            return ResponseEntity.notFound().build();
+        }
+
+        owner.setId(ownerId);
+        Owner ownerUpdate = ownerReposiotry.save(owner);
+
+        return ResponseEntity.ok(ownerUpdate);
+    }
+
+    @DeleteMapping("/{ownerId}")
+    public ResponseEntity<Void> delete(@PathVariable Long ownerId){
+
+        if(!ownerReposiotry.existsById(ownerId)){
+            return ResponseEntity.notFound().build();
+        }
+
+        ownerReposiotry.deleteById(ownerId);
+        return ResponseEntity.noContent().build();
+
 
     }
+
 }
