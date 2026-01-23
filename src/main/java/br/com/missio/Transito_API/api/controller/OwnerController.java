@@ -1,5 +1,6 @@
 package br.com.missio.Transito_API.api.controller;
 
+import br.com.missio.Transito_API.domain.exception.DomainException;
 import br.com.missio.Transito_API.domain.model.Owner;
 import br.com.missio.Transito_API.domain.repository.OwnerReposiotry;
 import br.com.missio.Transito_API.domain.service.RegistroPropietarioService;
@@ -59,6 +60,11 @@ public class OwnerController {
         }
         registroPropietarioService.delete(ownerId);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(DomainException.class)
+    public ResponseEntity<String> capture(DomainException e){
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
 }
