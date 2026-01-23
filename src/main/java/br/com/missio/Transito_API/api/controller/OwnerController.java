@@ -2,6 +2,8 @@ package br.com.missio.Transito_API.api.controller;
 
 import br.com.missio.Transito_API.domain.model.Owner;
 import br.com.missio.Transito_API.domain.repository.OwnerReposiotry;
+import br.com.missio.Transito_API.domain.service.RegistroPropietarioService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import java.util.List;
 @RequestMapping("/owners")
 public class OwnerController {
 
+    private final RegistroPropietarioService registroPropietarioService;
     private final OwnerReposiotry ownerReposiotry;
 
     @GetMapping
@@ -30,12 +33,13 @@ public class OwnerController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Owner save(@RequestBody Owner owner){
-        return ownerReposiotry.save(owner);
+    public Owner save(@Valid @RequestBody Owner owner){
+        return registroPropietarioService.save(owner);
     }
 
     @PutMapping("/{ownerId}")
-    public ResponseEntity<Owner> update(@PathVariable Long ownerId, @RequestBody Owner owner){
+    public ResponseEntity<Owner> update(@PathVariable Long ownerId,
+                                        @Valid @RequestBody Owner owner){
 
         if(!ownerReposiotry.existsById(ownerId)){
             return ResponseEntity.notFound().build();
@@ -53,11 +57,8 @@ public class OwnerController {
         if(!ownerReposiotry.existsById(ownerId)){
             return ResponseEntity.notFound().build();
         }
-
-        ownerReposiotry.deleteById(ownerId);
+        registroPropietarioService.delete(ownerId);
         return ResponseEntity.noContent().build();
-
-
     }
 
 }
