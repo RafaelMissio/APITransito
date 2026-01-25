@@ -3,7 +3,7 @@ package br.com.missio.Transito_API.api.controller;
 import br.com.missio.Transito_API.domain.exception.DomainException;
 import br.com.missio.Transito_API.domain.model.Owner;
 import br.com.missio.Transito_API.domain.repository.OwnerReposiotry;
-import br.com.missio.Transito_API.domain.service.RegistroPropietarioService;
+import br.com.missio.Transito_API.domain.service.OwnerRegistrationService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,16 +17,16 @@ import java.util.List;
 @RequestMapping("/owners")
 public class OwnerController {
 
-    private final RegistroPropietarioService registroPropietarioService;
+    private final OwnerRegistrationService registroPropietarioService;
     private final OwnerReposiotry ownerReposiotry;
 
     @GetMapping
-    public List<Owner> getAllOwners(){
+    public List<Owner> findAll(){
         return ownerReposiotry.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Owner> buscarPorId(@PathVariable Long id){
+    public ResponseEntity<Owner> findById(@PathVariable Long id){
        return ownerReposiotry.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
